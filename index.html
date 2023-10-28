@@ -15,10 +15,11 @@
     <script>
         // Accessing the camera
         navigator.mediaDevices.getUserMedia({ video: {
-                        facingMode: 'environment',
-                        maxBr: 2000000, // 2 Mbps
-                        maxCpb: 1000000,
-                        frameRate: { ideal: 60 }
+                        width: { min: 640, ideal: 1920, max: 1920 },
+                        height: { min: 400, ideal: 1080 },
+                        aspectRatio: 1.777777778,
+                        frameRate: { max: 30 },
+                        facingMode: { exact: "user" }
                     } })
             .then(function(stream) {
                 const video = document.getElementById('videoElement');
