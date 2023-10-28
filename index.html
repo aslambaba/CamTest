@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Camera Capture</title>
+    <title>High-Quality Camera Capture</title>
 </head>
 <body>
     <h1>Back Camera Capture</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="capture()">Take Picture</button>
     <canvas id="canvas" style="display: none;"></canvas>
-    <img id="capturedImage" src="" style="display: none;">
+    <img id="capturedImage" style="display: none;">
 
     <script>
-        // Function to capture picture from the camera
+        // Function to capture a high-quality picture from the camera
         function capture() {
             const video = document.getElementById('videoElement');
             const canvas = document.getElementById('canvas');
             const capturedImage = document.getElementById('capturedImage');
 
-            // Set canvas dimensions to match the video stream
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            // Set canvas dimensions to capture higher resolution
+            const videoWidth = video.videoWidth;
+            const videoHeight = video.videoHeight;
+            canvas.width = videoWidth * 2; // Doubling the resolution
+            canvas.height = videoHeight * 2;
 
-            // Draw the current video frame on the canvas
+            // Draw the current video frame on the canvas at higher resolution
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
             // Convert the canvas content to a data URL and display the image
