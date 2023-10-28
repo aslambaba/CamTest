@@ -4,15 +4,12 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture SEE</h1>
+    <h1>Back Camera Capture Store and Show Image</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <img id="capturedImage" style="display: none;">
-    <div>
-        <p>Stored Board Number: <span id="boardNumberDisplay"></span></p>
-        <img id="storedImage" style="display: none;">
-    </div>
+    <img id="storedImage" style="display: none;">
 
     <script>
         // Accessing the camera
@@ -58,9 +55,8 @@
         function saveBoardPicture() {
             let formData = new FormData();
             formData.append('picFile', imageBlob, boardNum + '.png');
-            let generatedBoardNum = generateBoardNum();
             let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generatedBoardNum;
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
             fetch(handlerURL, {
                 method: 'POST',
@@ -72,7 +68,7 @@
                 alert('File uploaded: ' + result);
 
                 // Display the stored image after upload
-                displayStoredImage(generatedBoardNum);
+                displayStoredImage();
                 // Handle success (e.g., navigate to another page or show a success message)
                 hide("savePicBtn");
                 show("reStartBtn");
@@ -83,14 +79,12 @@
             });
         }
 
-        // Function to display the stored image and board number
-        function displayStoredImage(boardNum) {
+        // Function to display the stored image
+        function displayStoredImage() {
             let storedImage = document.getElementById('storedImage');
-            let boardNumberDisplay = document.getElementById('boardNumberDisplay');
             storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + boardNum + '.png';
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.png';
             storedImage.style.display = 'block';
-            boardNumberDisplay.textContent = boardNum;
         }
 
         // Generate a random board number (two digits)
