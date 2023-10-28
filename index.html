@@ -1,55 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>WebRTC Video Capture</title>
-  <style>
-    video {
-      width: 320px;
-      height: 240px;
-    }
-  </style>
+    <title>High-Quality Camera Capture</title>
 </head>
 <body>
-  <video id="local-video"></video>
-  <button id="capture-button">Capture Video</button>
+    <h1>Back Camera Capture Store and Show Testing Version</h1>
+    <video id="videoElement" width="400" height="300" autoplay></video>
+    <button onclick="captureAndSave()">Take Picture and Save</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="capturedImage" style="display: none;">
+    <img id="storedImage" style="display: none;">
+    
 
-  <script>
+    <script>
+        // Accessing the camera
+        navigator.mediaDevices.getUserMedia({ video: {
+                        facingMode: 'environment',
+                        maxBr: 2000000, // 2 Mbps
+                        maxCpb: 1000000,
+                        frameRate: { ideal: 60 }
+                    } })
+            .then(function(stream) {
+                const video = document.getElementById('videoElement');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ' + err);
+            });
 
-    let videoStream;
+        // Function to capture a high-quality picture from the camera and save
+        function captureAndSave() {
+            const video = document.getElementById('videoElement');
+            const canvas = document.getElementById('canvas');
+            const capturedImage = document.getElementById('capturedImage');
 
-    async function TEST(){
-        videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    }
-    TEST()
-    // Display the video stream in the local-video element.
-    const localVideo = document.getElementById('local-video');
-    localVideo.srcObject = videoStream;
+            // Set canvas dimensions to capture higher resolution
+            const videoWidth = video.videoWidth;
+            const videoHeight = video.videoHeight;
+            canvas.width = videoWidth * 2; // Doubling the resolution
+            canvas.height = videoHeight * 2;
 
-    // Get the capture button.
-    const captureButton = document.getElementById('capture-button');
+            // Draw the current video frame on the canvas at higher resolution
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Start capturing the video when the capture button is clicked.
-    captureButton.addEventListener('click', async () => {
-      // Create a MediaRecorder instance.
-      const mediaRecorder = new MediaRecorder(videoStream, { mimeType: 'video/mp4;codecs=h264' });
+            // Convert the canvas content to a Blob
+            canvas.toBlob(function(blob) {
+                // Save the Blob to imageBlob
+                imageBlob = blob;
 
-      // Start recording the video.
-      mediaRecorder.start();
+                // Display the captured image
+                capturedImage.src = URL.createObjectURL(blob);
+                capturedImage.style.display = 'block';
 
-      // Wait for the recording to finish.
-      await mediaRecorder.stop();
+                // Save the captured image using saveBoardPicture function
+                saveBoardPicture();
+            }, 'image/jpeg', 0.9);
+        }
 
-      // Get the recorded video data.
-      const recordedVideoData = mediaRecorder.getBlob();
+        // Function to save the captured image
+        function saveBoardPicture() {
+            let formData = new FormData();
+            formData.append('picFile', imageBlob, generateBoardNum() + '.jpg');
+            let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
-      // Create a new video element.
-      const capturedVideo = document.createElement('video');
-      capturedVideo.src = URL.createObjectURL(recordedVideoData);
+            fetch(handlerURL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log('File uploaded:', result);
+                alert('File uploaded: ' + result);
 
-      // Display the captured video in the body of the page.
-      document.body.appendChild(capturedVideo);
-    });
-  </script>
+                // Display the stored image after upload
+                displayStoredImage();
+                // Handle success (e.g., navigate to another page or show a success message)
+                //hide("savePicBtn");
+                //show("reStartBtn");
+            })
+            .catch(error => {
+                alert('Upload failed:', error);
+                // Handle error
+            });
+        }
+
+        // Function to display the stored image
+        function displayStoredImage() {
+            let storedImage = document.getElementById('storedImage');
+            storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.jpg';
+            storedImage.style.display = 'block';
+        }
+
+        // Generate a random board number (two digits)
+        function generateBoardNum() {
+            return 7171;
+            // return Math.floor(Math.random() * 100).toString().padStart(2, '0');
+        }
+    </script>
 </body>
 </html>
