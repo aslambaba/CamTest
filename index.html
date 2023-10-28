@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Image 7171 UPDATED</h1>
+    <h1>Back Camera Capture Store and Show Testing Version with JPG</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -48,13 +48,13 @@
 
                 // Save the captured image using saveBoardPicture function
                 saveBoardPicture();
-            }, 'image/png');
+            }, 'image/jpeg', 1);
         }
 
         // Function to save the captured image
         function saveBoardPicture() {
             let formData = new FormData();
-            formData.append('picFile', imageBlob, generateBoardNum() + '.png');
+            formData.append('picFile', imageBlob, generateBoardNum() + '.jpg');
             let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
                 '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
@@ -83,14 +83,13 @@
         function displayStoredImage() {
             let storedImage = document.getElementById('storedImage');
             storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.png';
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.jpg';
             storedImage.style.display = 'block';
         }
 
         // Generate a random board number (two digits)
         function generateBoardNum() {
-            return 7171;
-            // return Math.floor(Math.random() * 100).toString().padStart(2, '0');
+            return 1122;
         }
     </script>
 </body>
