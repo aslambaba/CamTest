@@ -1,68 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rear Camera Image Capture</title>
+    <title>Camera Capture</title>
 </head>
 <body>
-    <video id="videoElement" width="640" height="480" autoplay></video>
-    <button id="captureButton">Capture Image</button>
-    <canvas style="display: none;"></canvas>
-    <img id="capturedImage" style="display: none; max-width: 100%;">
+    <h1>Back Camera Capture</h1>
+    <video id="videoElement" width="400" height="300" autoplay></video>
+    <button onclick="capture()">Take Picture</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="capturedImage" src="" style="display: none;">
 
     <script>
-        let rearCamera = null;
-
-        // Function to capture an image
-        function captureImage() {
+        // Function to capture picture from the camera
+        function capture() {
             const video = document.getElementById('videoElement');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
+            const canvas = document.getElementById('canvas');
+            const capturedImage = document.getElementById('capturedImage');
 
-            // Set canvas dimensions to the same as the video
+            // Set canvas dimensions to match the video stream
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
 
-            // Draw the current frame of the video onto the canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Draw the current video frame on the canvas
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Convert the canvas content to a data URL representing the image
+            // Convert the canvas content to a data URL and display the image
             const imageDataURL = canvas.toDataURL('image/png');
-
-            // Save the captured image to a local file
-            const a = document.createElement('a');
-            a.href = imageDataURL;
-            a.download = 'captured_image.png';
-            a.click();
-
-            // Display the captured image on the webpage
-            const capturedImage = document.getElementById('capturedImage');
             capturedImage.src = imageDataURL;
             capturedImage.style.display = 'block';
         }
 
-        // Get the rear camera
-        async function getRearCamera() {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.toLowerCase().includes('back'));
-        }
-
-        // Access the rear camera and start streaming the video
-        async function startRearCamera() {
-            await getRearCamera();
-            if (rearCamera) {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: rearCamera.deviceId } } });
-                const videoElement = document.getElementById('videoElement');
-                videoElement.srcObject = stream;
-            } else {
-                console.error('Rear camera not found.');
-            }
-        }
-
-        // Start streaming from the rear camera when the page loads
-        startRearCamera().catch(err => console.error('Error accessing the rear camera:', err));
-
-        // Add click event listener to the capture button
-        document.getElementById('captureButton').addEventListener('click', captureImage);
+        // Accessing the camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function(stream) {
+                const video = document.getElementById('videoElement');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ' + err);
+            });
     </script>
 </body>
 </html>
