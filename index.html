@@ -14,7 +14,12 @@
     
     <script>
         // Accessing the camera
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        navigator.mediaDevices.getUserMedia({ video: {
+                        facingMode: 'environment',
+                        maxBr: 2000000, // 2 Mbps
+                        maxCpb: 1000000, // 1Mbps
+                        frameRate: { ideal: 60 }
+                    }})
             .then(function(stream) {
                 const video = document.getElementById('videoElement');
                 video.srcObject = stream;
