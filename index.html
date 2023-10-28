@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Image 8181</h1>
+    <h1>Back Camera Capture Store and Show Image 7171</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -54,7 +54,7 @@
         // Function to save the captured image
         function saveBoardPicture() {
             let formData = new FormData();
-            formData.append('picFile', imageBlob, boardNum + '.png');
+            formData.append('picFile', imageBlob, generateBoardNum() + '.png');
             let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
                 '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
@@ -89,7 +89,7 @@
 
         // Generate a random board number (two digits)
         function generateBoardNum() {
-            return 8181;
+            return 7171;
             // return Math.floor(Math.random() * 100).toString().padStart(2, '0');
         }
     </script>
