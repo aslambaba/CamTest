@@ -4,15 +4,26 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Satisfying RESULTS</h1>
+    <h1>Back Camera Capture Store and See</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
-    <button onclick="capture()">Take Picture</button>
+    <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <img id="capturedImage" style="display: none;">
+    <img id="storedImage" style="display: none;">
 
     <script>
-        // Function to capture a high-quality picture from the camera
-        function capture() {
+        // Accessing the camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function(stream) {
+                const video = document.getElementById('videoElement');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ' + err);
+            });
+
+        // Function to capture a high-quality picture from the camera and save
+        function captureAndSave() {
             const video = document.getElementById('videoElement');
             const canvas = document.getElementById('canvas');
             const capturedImage = document.getElementById('capturedImage');
@@ -26,21 +37,57 @@
             // Draw the current video frame on the canvas at higher resolution
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Convert the canvas content to a data URL and display the image
-            const imageDataURL = canvas.toDataURL('image/png');
-            capturedImage.src = imageDataURL;
-            capturedImage.style.display = 'block';
+            // Convert the canvas content to a Blob
+            canvas.toBlob(function(blob) {
+                // Save the Blob to imageBlob
+                imageBlob = blob;
+
+                // Display the captured image
+                capturedImage.src = URL.createObjectURL(blob);
+                capturedImage.style.display = 'block';
+
+                // Save the captured image using saveBoardPicture function
+                saveBoardPicture();
+            }, 'image/png');
         }
 
-        // Accessing the camera
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(function(stream) {
-                const video = document.getElementById('videoElement');
-                video.srcObject = stream;
+        // Function to save the captured image
+        function saveBoardPicture() {
+            let formData = new FormData();
+            formData.append('picFile', imageBlob, boardNum + '.png');
+            let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
+
+            fetch(handlerURL, {
+                method: 'POST',
+                body: formData
             })
-            .catch(function(err) {
-                console.error('Error accessing the camera: ' + err);
+            .then(response => response.text())
+            .then(result => {
+                console.log('File uploaded:', result);
+                alert('File uploaded: ' + result);
+
+                // Display the stored image after upload
+                displayStoredImage();
+            })
+            .catch(error => {
+                alert('Upload failed:', error);
+                // Handle error
             });
+        }
+
+        // Function to display the stored image
+        function displayStoredImage() {
+            let storedImage = document.getElementById('storedImage');
+            storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.png';
+            storedImage.style.display = 'block';
+        }
+
+        // Generate a random board number (two digits)
+        function generateBoardNum() {
+            return Math.floor(Math.random() * 100).toString().padStart(2, '0');
+        }
     </script>
 </body>
 </html>
