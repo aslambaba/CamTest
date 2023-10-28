@@ -2,9 +2,10 @@
 <html>
 <head>
     <title>High-Quality Camera Capture</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Image</h1>
+    <h1>Back Camera Capture</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -25,38 +26,42 @@
         // Function to capture a high-quality picture from the camera and save
         function captureAndSave() {
             const video = document.getElementById('videoElement');
-            const canvas = document.getElementById('canvas');
-            const capturedImage = document.getElementById('capturedImage');
 
             // Set canvas dimensions to capture higher resolution
             const videoWidth = video.videoWidth;
             const videoHeight = video.videoHeight;
-            canvas.width = videoWidth * 2; // Doubling the resolution
-            canvas.height = videoHeight * 2;
+            const canvas = document.createElement('canvas');
+            canvas.width = videoWidth * 4; // Quadrupling the resolution
+            canvas.height = videoHeight * 4;
 
             // Draw the current video frame on the canvas at higher resolution
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Convert the canvas content to a Blob
-            canvas.toBlob(function(blob) {
-                // Save the Blob to imageBlob
-                imageBlob = blob;
+            // Convert the canvas content to a data URL
+            const dataURL = canvas.toDataURL('image/png');
 
-                // Display the captured image
-                capturedImage.src = URL.createObjectURL(blob);
-                capturedImage.style.display = 'block';
+            // Use html2canvas library to capture the canvas
+            html2canvas(canvas, { scale: 4 }).then(function(canvas) {
+                // Convert the canvas to a blob
+                canvas.toBlob(function(blob) {
+                    // Display the captured image
+                    const capturedImage = document.getElementById('capturedImage');
+                    capturedImage.src = URL.createObjectURL(blob);
+                    capturedImage.style.display = 'block';
 
-                // Save the captured image using saveBoardPicture function
-                saveBoardPicture();
-            }, 'image/png');
+                    // Save the captured image using saveBoardPicture function
+                    saveBoardPicture(blob);
+                });
+            });
         }
 
         // Function to save the captured image
-        function saveBoardPicture() {
+        function saveBoardPicture(imageBlob) {
             let formData = new FormData();
-            formData.append('picFile', imageBlob, boardNum + '.png');
+            formData.append('picFile', imageBlob, 'captured_image.png');
             let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
+                '?clubID=2900013&eventID=123';
 
             fetch(handlerURL, {
                 method: 'POST',
@@ -83,14 +88,8 @@
         function displayStoredImage() {
             let storedImage = document.getElementById('storedImage');
             storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.png';
+                '?clubID=2900013&eventID=123&file=captured_image.png';
             storedImage.style.display = 'block';
-        }
-
-        // Generate a random board number (two digits)
-        function generateBoardNum() {
-            return 9191;
-            // return Math.floor(Math.random() * 100).toString().padStart(2, '0');
         }
     </script>
 </body>
