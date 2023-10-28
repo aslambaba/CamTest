@@ -2,15 +2,16 @@
 <html>
 <head>
     <title>High-Quality Camera Capture</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas2image/canvas2image.js"></script>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version with JPG</h1>
+    <h1>Back Camera Capture Store and Show Testing Version</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <img id="capturedImage" style="display: none;">
     <img id="storedImage" style="display: none;">
-
+    
     <script>
         // Accessing the camera
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
@@ -37,24 +38,35 @@
             // Draw the current video frame on the canvas at higher resolution
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Convert the canvas content to a Blob
-            canvas.toBlob(function(blob) {
-                // Save the Blob to imageBlob
-                imageBlob = blob;
+            // Convert the canvas content to an image using Canvas2Image
+            const imageData = canvas.toDataURL('image/jpeg', 1.0); // Get the base64 data
+            const imgDataBlob = dataURItoBlob(imageData);
 
-                // Display the captured image
-                capturedImage.src = URL.createObjectURL(blob);
-                capturedImage.style.display = 'block';
+            // Display the captured image
+            capturedImage.src = imageData;
+            capturedImage.style.display = 'block';
 
-                // Save the captured image using saveBoardPicture function
-                saveBoardPicture();
-            }, 'image/jpeg', 1);
+            // Save the captured image using saveBoardPicture function
+            saveBoardPicture(imgDataBlob);
+        }
+
+        // Convert data URI to Blob
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            return new Blob([ab], { type: 'image/jpeg' });
         }
 
         // Function to save the captured image
-        function saveBoardPicture() {
+        function saveBoardPicture(imgDataBlob) {
             let formData = new FormData();
-            formData.append('picFile', imageBlob, generateBoardNum() + '.jpg');
+            formData.append('picFile', imgDataBlob, generateBoardNum() + '.jpg');
             let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
                 '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
@@ -69,13 +81,9 @@
 
                 // Display the stored image after upload
                 displayStoredImage();
-                // Handle success (e.g., navigate to another page or show a success message)
-                //hide("savePicBtn");
-                //show("reStartBtn");
             })
             .catch(error => {
                 alert('Upload failed:', error);
-                // Handle error
             });
         }
 
@@ -89,7 +97,7 @@
 
         // Generate a random board number (two digits)
         function generateBoardNum() {
-            return 1122;
+            return 7171;
         }
     </script>
 </body>
