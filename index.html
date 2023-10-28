@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>High-Quality Camera Capture with WebRTC</title>
+    <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture</h1>
+    <h1>Back Camera Capture Satisfying RESULTS</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="capture()">Take Picture</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <img id="capturedImage" style="display: none;">
 
     <script>
-        // Function to capture a high-quality picture from the camera using WebRTC
+        // Function to capture a high-quality picture from the camera
         function capture() {
             const video = document.getElementById('videoElement');
             const canvas = document.getElementById('canvas');
@@ -32,7 +32,7 @@
             capturedImage.style.display = 'block';
         }
 
-        // Accessing the camera using WebRTC
+        // Accessing the camera
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
             .then(function(stream) {
                 const video = document.getElementById('videoElement');
