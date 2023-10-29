@@ -2,10 +2,29 @@
 <html>
 <head>
     <title>High-Quality Camera Capture</title>
+    <style>
+        #videoContainer {
+            max-width: 100%;
+            margin: auto;
+        }
+
+        #videoElement {
+            width: 100%;
+            max-width: 700px; /* Set the maximum width for the video container */
+            height: auto;
+        }
+
+        /* Additional CSS for mobile devices */
+        @media (max-width: 768px) {
+            #videoElement {
+                max-width: 100%; /* Adjust to the screen width for smaller devices */
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Back Camera Capture v5</h1>
-    <video id="videoElement" width="800" height="450" autoplay></video>
+    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
+    <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <h4>Get Image Directly</h4>
@@ -39,7 +58,7 @@
             alert("Btn click");
             var sizeFactor = 0.8;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
-            var imageCompression = 0.95;
+            var imageCompression = 1;
 
             var config = {
                 sizeFactor,
