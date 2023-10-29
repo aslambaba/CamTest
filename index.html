@@ -4,19 +4,19 @@
     <title>High-Quality Camera Capture</title>
     <style>
         #videoContainer {
-            max-width: 100%;
+            width: 75%;
+            height: 100%;
             margin: auto;
         }
 
         #videoElement {
-            width: 99%;
-            max-width: 99%; /* Set the maximum width for the video container */
-            height: auto;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
-    <h5>Back Camera Capture v6.4</h5>
+    <h5>Back Camera Capture v6.5</h5>
     <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()" style="padding: 8px 10px;">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -34,6 +34,7 @@
         let cameraPhoto = new jslibHtml5CameraPhoto.default(videoElement);
         let facingMode = "ENVIRONMENT";
         let imageBlob;
+
         cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
           .then(() => {
               var log =
