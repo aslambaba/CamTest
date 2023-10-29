@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
+    <h1>Back Camera Capture</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -43,7 +43,7 @@
             };
 
             var dataUri = cameraPhoto.getDataUri(config);
-            window.document.getElementById('capturedImage').src = dataUri;
+            // window.document.getElementById('capturedImage').src = dataUri;
 
             // Upload the captured image to the server
             uploadImageToServer(dataUri);
@@ -84,15 +84,15 @@
 
         // Function to display the stored image
         function displayStoredImage(boardNum) {
-            let storedImage = document.getElementById('storedImage');
+            let storedImage = document.getElementById('capturedImage');
             storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.jpg'; // Replace with your server URL
+                '?clubID=2900013&eventID=123&boardNum=' + boardNum + '.png'; // Replace with your server URL
             storedImage.style.display = 'block';
         }
 
         // Generate a random board number (two digits)
         function generateBoardNum() {
-            return 7171;
+            return 7474;
             // return Math.floor(Math.random() * 100).toString().padStart(2, '0');
         }
     </script>
