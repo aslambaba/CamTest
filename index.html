@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-    <h5>Back Camera Capture v6.3</h5>
+    <h5>Back Camera Capture v6.4</h5>
     <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()" style="padding: 8px 10px;">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -48,7 +48,6 @@
         // Function to capture a high-quality picture from the camera and save
         window.captureAndSave = () => {
             console.log('captureAndSave');
-            alert("Btn click");
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 0.97;
@@ -70,16 +69,17 @@
 
             console.log('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
             var dataaslam = fileSizeInMB.toFixed(2)
-            alert(`Size of captured image: ${dataaslam} MB`);
 
 
 
 
             // Upload the captured image to the server
-            alert("END captureSave");
 
             imageBlob = dataURLtoBlob(dataUri)
             saveBoardPicture()
+
+            alert(`Size of captured image: ${dataaslam} MB`);
+
         }
 
         function dataURLtoBlob(dataurl) {
