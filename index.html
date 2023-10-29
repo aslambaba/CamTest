@@ -10,20 +10,13 @@
 
         #videoElement {
             width: 100%;
-            max-width: 700px; /* Set the maximum width for the video container */
+            max-width: 60%; /* Set the maximum width for the video container */
             height: auto;
-        }
-
-        /* Additional CSS for mobile devices */
-        @media (max-width: 768px) {
-            #videoElement {
-                max-width: 100%; /* Adjust to the screen width for smaller devices */
-            }
         }
     </style>
 </head>
 <body>
-    <h1>Back Camera Capture v6</h1>
+    <h1>Back Camera Capture v6.1</h1>
     <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -58,7 +51,7 @@
             alert("Btn click");
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
-            var imageCompression = 0.95;
+            var imageCompression = 0.97;
 
             var config = {
                 sizeFactor,
