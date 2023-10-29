@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture v3</h1>
+    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
     <video id="videoElement" width="500" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -50,6 +50,18 @@
             var dataUri = cameraPhoto.getDataUri(config);
             window.document.getElementById('capturedImageLocal').src = dataUri;
 
+            // Calculate the size of the captured image
+            var byteString = atob(dataUri.split(',')[1]);
+            var fileSizeInBytes = byteString.length;
+            var fileSizeInKB = fileSizeInBytes / 1024;
+            var fileSizeInMB = fileSizeInKB / 1024;
+
+            console.log('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
+            alert('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
+
+
+
+
             // Upload the captured image to the server
             alert("END captureSave");
 
@@ -79,14 +91,13 @@
                 .then(result => {
                     console.log('File uploaded:', result);
                     alert('File uploaded: ' + result);
+                    displayStoredImage(generateBoardNum());
                 })
                 .catch(error => {
                     console.log("ERROR: ",error)
                     alert('Upload failed:', error);
                     // Handle error
             });
-            
-            displayStoredImage(generateBoardNum());
         } 
         // Function to display the stored image
         function displayStoredImage(boardNum) {
