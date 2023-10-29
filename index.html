@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version With LIB</h1>
+    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -21,8 +21,8 @@
         cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
           .then(() => {
               var log =
-                `Camera started with maximum resoluton and ` +
-                `prefered facingMode : ${facingMode}`;
+                `Camera started with maximum resolution and ` +
+                `preferred facingMode: ${facingMode}`;
               console.log(log);
           })
           .catch((error) => {
@@ -31,7 +31,7 @@
 
         // Function to capture a high-quality picture from the camera and save
         window.captureAndSave = () => {
-            console.log('captureAndSave')
+            console.log('captureAndSave');
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 1;
@@ -44,41 +44,49 @@
 
             var dataUri = cameraPhoto.getDataUri(config);
             window.document.getElementById('capturedImage').src = dataUri;
+
+            // Upload the captured image to the server
+            uploadImageToServer(dataUri);
         }
 
-        // Function to save the captured image
-        function saveBoardPicture() {
-            let formData = new FormData();
-            formData.append('picFile', imageBlob, generateBoardNum() + '.jpg');
-            let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
+        // Function to upload the image to the server
+        function uploadImageToServer(imageData) {
+            // Convert the data URI to a Blob
+            fetch(imageData)
+              .then(res => res.blob())
+              .then(blob => {
+                let formData = new FormData();
+                formData.append('picFile', blob, generateBoardNum() + '.png');
+                let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
                 '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
 
-            fetch(handlerURL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(result => {
-                console.log('File uploaded:', result);
-                alert('File uploaded: ' + result);
+                fetch(handlerURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(result => {
+                    console.log('File uploaded:', result);
+                    alert('File uploaded: ' + result);
 
-                // Display the stored image after upload
-                displayStoredImage();
-                // Handle success (e.g., navigate to another page or show a success message)
-                //hide("savePicBtn");
-                //show("reStartBtn");
-            })
-            .catch(error => {
-                alert('Upload failed:', error);
-                // Handle error
-            });
+                    // Display the stored image after upload
+                    displayStoredImage(generateBoardNum());
+                })
+                .catch(error => {
+                    alert('Upload failed:', error);
+                    // Handle error
+                });
+              })
+              .catch(error => {
+                console.error('Error converting data URI to Blob:', error);
+              });
         }
 
         // Function to display the stored image
-        function displayStoredImage() {
+        function displayStoredImage(boardNum) {
             let storedImage = document.getElementById('storedImage');
             storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.jpg';
+                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum() + '.jpg'; // Replace with your server URL
             storedImage.style.display = 'block';
         }
 
