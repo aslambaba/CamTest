@@ -2,11 +2,21 @@
 <html>
 <head>
     <title>High-Quality Camera Capture</title>
-    
+    <style>
+        #videoContainer {
+            max-width: 100%;
+            margin: auto;
+        }
+
+        #videoElement {
+            max-width: 90%; /* Set the maximum width for the video container */
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <h5>Back Camera Capture v6.6</h5>
-    <video id="videoElement" height="300" width="400" autoplay></video>
+    <h5>Back Camera Capture v6.8</h5>
+    <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()" style="padding: 8px 10px;">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <h4>Get Image Directly</h4>
