@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture v1</h1>
+    <h1>Back Camera Capture v2</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -32,6 +32,7 @@
         // Function to capture a high-quality picture from the camera and save
         window.captureAndSave = () => {
             console.log('captureAndSave');
+            alert("Btn click");
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 1;
@@ -46,11 +47,14 @@
             // window.document.getElementById('capturedImage').src = dataUri;
 
             // Upload the captured image to the server
+            alert("END captureSave");
             uploadImageToServer(dataUri);
         }
 
         // Function to upload the image to the server
         function uploadImageToServer(imageData) {
+            alert("Start captureSave");
+
             // Convert the data URI to a Blob
             fetch(imageData)
               .then(res => res.blob())
@@ -59,6 +63,8 @@
                 formData.append('picFile', blob, generateBoardNum() + '.png');
                 let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
                 '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
+
+                alert("FETCHING START");
 
                 fetch(handlerURL, {
                     method: 'POST',
