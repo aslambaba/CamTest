@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
+    <h1>Back Camera Capture v4</h1>
     <video id="videoElement" width="500" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -57,7 +57,8 @@
             var fileSizeInMB = fileSizeInKB / 1024;
 
             console.log('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
-            alert('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
+            var dataaslam = fileSizeInMB.toFixed(2)
+            alert(`Size of captured image: ${dataaslam} MB`);
 
 
 
