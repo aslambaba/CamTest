@@ -4,58 +4,46 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version</h1>
-    <video id="videoElement" width="400" height="300" autoplay></video>
+    <h1>Back Camera Capture Store and Show Testing Version With LIB</h1>
+    <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
-    <img id="capturedImage" style="display: none;">
+    <img id="capturedImage" style="display: block;">
     <img id="storedImage" style="display: none;">
-    
 
-    <script>
+    <script type="module">
+        import jslibHtml5CameraPhoto from 'https://cdn.jsdelivr.net/npm/jslib-html5-camera-photo@3.3.4/+esm'
         // Accessing the camera
-        navigator.mediaDevices.getUserMedia({ video: {
-                        width: { min: 640, ideal: 1920, max: 1920 },
-                        height: { min: 400, ideal: 1080 },
-                        aspectRatio: 1.777777778,
-                        frameRate: { max: 30 },
-                        facingMode: 'environment'
-                    } })
-            .then(function(stream) {
-                const video = document.getElementById('videoElement');
-                video.srcObject = stream;
-            })
-            .catch(function(err) {
-                console.error('Error accessing the camera: ' + err);
-            });
+        let FACING_MODES = jslibHtml5CameraPhoto.FACING_MODES;
+        let videoElement = document.getElementById('videoElement');
+        let cameraPhoto = new jslibHtml5CameraPhoto.default(videoElement);
+        let facingMode = "ENVIRONMENT";
+        cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
+          .then(() => {
+              var log =
+                `Camera started with maximum resoluton and ` +
+                `prefered facingMode : ${facingMode}`;
+              console.log(log);
+          })
+          .catch((error) => {
+              console.error('Camera not started!', error);
+          });
 
         // Function to capture a high-quality picture from the camera and save
-        function captureAndSave() {
-            const video = document.getElementById('videoElement');
-            const canvas = document.getElementById('canvas');
-            const capturedImage = document.getElementById('capturedImage');
+        window.captureAndSave = () => {
+            console.log('captureAndSave')
+            var sizeFactor = 1;
+            var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
+            var imageCompression = 1;
 
-            // Set canvas dimensions to capture higher resolution
-            const videoWidth = video.videoWidth;
-            const videoHeight = video.videoHeight;
-            canvas.width = videoWidth * 2; // Doubling the resolution
-            canvas.height = videoHeight * 2;
+            var config = {
+                sizeFactor,
+                imageType,
+                imageCompression
+            };
 
-            // Draw the current video frame on the canvas at higher resolution
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Convert the canvas content to a Blob
-            canvas.toBlob(function(blob) {
-                // Save the Blob to imageBlob
-                imageBlob = blob;
-
-                // Display the captured image
-                capturedImage.src = URL.createObjectURL(blob);
-                capturedImage.style.display = 'block';
-
-                // Save the captured image using saveBoardPicture function
-                saveBoardPicture();
-            }, 'image/jpeg', 0.9);
+            var dataUri = cameraPhoto.getDataUri(config);
+            window.document.getElementById('capturedImage').src = dataUri;
         }
 
         // Function to save the captured image
