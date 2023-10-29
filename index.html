@@ -4,7 +4,7 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture</h1>
+    <h1>Back Camera Capture v1</h1>
     <video id="videoElement" width="400" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -85,8 +85,7 @@
         // Function to display the stored image
         function displayStoredImage(boardNum) {
             let storedImage = document.getElementById('capturedImage');
-            storedImage.src = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + boardNum + '.png'; // Replace with your server URL
+            storedImage.src = 'https://vubridge.com/comp/Clubs/Board_' + boardNum + '.png'; // Replace with your server URL
             storedImage.style.display = 'block';
         }
 
