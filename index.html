@@ -4,8 +4,8 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
-    <video id="videoElement" width="500" height="300" autoplay></video>
+    <h1>Back Camera Capture v5</h1>
+    <video id="videoElement" width="800" height="450" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
     <h4>Get Image Directly</h4>
@@ -37,7 +37,7 @@
         window.captureAndSave = () => {
             console.log('captureAndSave');
             alert("Btn click");
-            var sizeFactor = 0.5;
+            var sizeFactor = 0.8;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 0.95;
 
