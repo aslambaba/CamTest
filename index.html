@@ -10,7 +10,7 @@
 
         #videoElement {
             width: 95%;
-            max-width: 90%; /* Set the maximum width for the video container */
+            max-width: 95%; /* Set the maximum width for the video container */
             height: auto;
         }
     </style>
@@ -48,7 +48,6 @@
         // Function to capture a high-quality picture from the camera and save
         window.captureAndSave = () => {
             console.log('captureAndSave');
-            alert("Btn click");
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 0.97;
@@ -70,16 +69,12 @@
 
             console.log('Size of captured image:', fileSizeInMB.toFixed(2) + ' MB');
             var dataaslam = fileSizeInMB.toFixed(2)
-            alert(`Size of captured image: ${dataaslam} MB`);
-
-
-
-
             // Upload the captured image to the server
-            alert("END captureSave");
-
             imageBlob = dataURLtoBlob(dataUri)
             saveBoardPicture()
+
+            alert(`Size of captured image: ${dataaslam} MB`);
+            
         }
 
         function dataURLtoBlob(dataurl) {
