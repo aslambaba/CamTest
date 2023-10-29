@@ -4,10 +4,13 @@
     <title>High-Quality Camera Capture</title>
 </head>
 <body>
-    <h1>Back Camera Capture v2</h1>
-    <video id="videoElement" width="400" height="300" autoplay></video>
+    <h1>Back Camera Capture v3</h1>
+    <video id="videoElement" width="500" height="300" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
+    <h4>Get Image Directly</h4>
+    <img id="capturedImageLocal" style="display: block;">
+    <h4>Image From Server</h4>
     <img id="capturedImage" style="display: block;">
     <img id="storedImage" style="display: none;">
 
@@ -18,6 +21,7 @@
         let videoElement = document.getElementById('videoElement');
         let cameraPhoto = new jslibHtml5CameraPhoto.default(videoElement);
         let facingMode = "ENVIRONMENT";
+        let imageBlob;
         cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
           .then(() => {
               var log =
@@ -44,29 +48,30 @@
             };
 
             var dataUri = cameraPhoto.getDataUri(config);
-            // window.document.getElementById('capturedImage').src = dataUri;
+            window.document.getElementById('capturedImageLocal').src = dataUri;
 
             // Upload the captured image to the server
             alert("END captureSave");
-            uploadImageToServer(dataUri);
+
+            imageBlob = dataURLtoBlob(dataUri)
+            saveBoardPicture()
         }
 
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
         // Function to upload the image to the server
-        function uploadImageToServer(imageData) {
-            alert("Start captureSave");
-
-            // Convert the data URI to a Blob
-            fetch(imageData)
-              .then(res => res.blob())
-              .then(blob => {
-                let formData = new FormData();
-                formData.append('picFile', blob, generateBoardNum() + '.png');
-                let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx' +
-                '?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
-
-                alert("FETCHING START");
-
-                fetch(handlerURL, {
+        function saveBoardPicture() {   
+            let formData = new FormData();
+            formData.append('picFile', imageBlob, generateBoardNum() + '.png');
+            let handlerURL = 'https://www.vubridge.com/Comp/Handlers/PictureUploadHandler.ashx?clubID=2900013&eventID=123&boardNum=' + generateBoardNum();
+    
+            fetch(handlerURL, {
                     method: 'POST',
                     body: formData
                 })
@@ -74,20 +79,15 @@
                 .then(result => {
                     console.log('File uploaded:', result);
                     alert('File uploaded: ' + result);
-
-                    // Display the stored image after upload
-                    displayStoredImage(generateBoardNum());
                 })
                 .catch(error => {
+                    console.log("ERROR: ",error)
                     alert('Upload failed:', error);
                     // Handle error
-                });
-              })
-              .catch(error => {
-                console.error('Error converting data URI to Blob:', error);
-              });
-        }
-
+            });
+            
+            displayStoredImage(generateBoardNum());
+        } 
         // Function to display the stored image
         function displayStoredImage(boardNum) {
             let storedImage = document.getElementById('capturedImage');
