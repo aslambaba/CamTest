@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <h1>Back Camera Capture Store and Show Testing Version with library</h1>
+    <h1>Back Camera Capture v6</h1>
     <video id="videoElement" autoplay></video>
     <button onclick="captureAndSave()">Take Picture and Save</button>
     <canvas id="canvas" style="display: none;"></canvas>
@@ -56,9 +56,9 @@
         window.captureAndSave = () => {
             console.log('captureAndSave');
             alert("Btn click");
-            var sizeFactor = 0.8;
+            var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
-            var imageCompression = 1;
+            var imageCompression = 0.95;
 
             var config = {
                 sizeFactor,
