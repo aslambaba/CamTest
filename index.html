@@ -6,24 +6,36 @@
         #videoContainer {
             max-width: 100%;
             margin: auto;
+            text-align: center;
         }
 
         #videoElement {
-            max-width: 90%; /* Set the maximum width for the video container */
+            max-width: 99%; /* Set the maximum width for the video container */
             height: auto;
+        }
+        .mainContainer{
+            padding: 30px 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h5>Back Camera Capture v6.9</h5>
-    <video id="videoElement" autoplay></video>
-    <button onclick="captureAndSave()" style="padding: 8px 10px;">Take Picture and Save</button>
-    <canvas id="canvas" style="display: none;"></canvas>
-    <h4>Get Image Directly</h4>
-    <img id="capturedImageLocal" style="display: block;">
-    <h4>Image From Server</h4>
-    <img id="capturedImage" style="display: block;">
-    <img id="storedImage" style="display: none;">
+    <div class="mainContainer">
+        <h1>WebRTC Cam</h1>
+        <h5>Back Camera Capture v6.9</h5>
+        <div id="video-container">
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
+        <div id="image-container">
+            <!-- <img id="capturedImageLocal" style="display: block;"> -->
+
+        </div>
+        <br>
+        <button onclick="checkCameraInUse()">Validete</button>
+        <button onclick="capture()" style="padding: 8px 10px;">Take Picture</button>
+        <button onclick="saveBoardPicture()" style="padding: 8px 10px;">Save Picture</button>
+    </div>
+    
 
     <script>
         //# jslib-html5-camera-photo.min.js
@@ -33,10 +45,21 @@
 
     <script>
         // Accessing the camera
+
+        const imageContainer = document.querySelector('#image-container');
+        const image = document.createElement('img');
+        image.id = "capturedImageLocal"
+        image.style.display = "block";
+
+        const videoContainer = document.querySelector('#video-container');
+        const video = document.createElement('video');
+        video.id = "videoElement"
+        video.autoplay = true;
+
         let jslibHtml5CameraPhoto = window.JslibHtml5CameraPhoto;
         let FACING_MODES = jslibHtml5CameraPhoto.FACING_MODES;
-        let videoElement = document.getElementById('videoElement');
-        let cameraPhoto = new jslibHtml5CameraPhoto.default(videoElement);
+        // let videoElement = document.getElementById('videoElement');
+        let cameraPhoto = new jslibHtml5CameraPhoto.default(video);
         let facingMode = "ENVIRONMENT";
         let imageBlob;
 
@@ -46,21 +69,45 @@
         cameraPhoto.setCameraSettings(cameraSettings);
         }
 
+        function checkCameraInUse() {
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    const videoInputs = devices.filter(device => device.kind === 'videoinput');
+                    if (videoInputs.length > 0) {
+                        // Camera is in use
+                        alert('Camera is currently in use. Please close any other applications or tabs using the camera.');
+                    } else {
+                        // No other applications are using the camera, proceed to start the camera
+                        Validate();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error while checking camera usage:', error);
+                });
+        }
 
-        cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
-          .then(() => {
-              var log =
-                `Camera started with maximum resolution and ` +
-                `preferred facingMode: ${facingMode}`;
-              console.log(log);
-          })
-          .catch((error) => {
-              console.error('Camera not started!', error);
-          });
+        function Validate(){
+
+            // Get the video container element
+            videoContainer.append(video);
+
+            cameraPhoto.startCameraMaxResolution(FACING_MODES[facingMode])
+            .then(() => {
+                var log =
+                    `Camera started with maximum resolution and ` +
+                    `preferred facingMode: ${facingMode}`;
+                console.log(log);
+            })
+            .catch((error) => {
+                console.error('Camera not started!', error);
+            });
+        }
+        
 
         // Function to capture a high-quality picture from the camera and save
-        captureAndSave = () => {
+        capture = () => {
             console.log('captureAndSave');
+
             var sizeFactor = 1;
             var imageType = jslibHtml5CameraPhoto.IMAGE_TYPES.JPG;
             var imageCompression = 0.97;
@@ -71,7 +118,10 @@
             };
 
             var dataUri = cameraPhoto.getDataUri(config);
-            document.getElementById('capturedImageLocal').src = dataUri;
+
+            videoContainer.style.display = "none"
+            image.src = dataUri;
+            imageContainer.append(image)
 
             // Calculate the size of the captured image
             var byteString = atob(dataUri.split(',')[1]);
